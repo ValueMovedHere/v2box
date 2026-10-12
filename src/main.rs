@@ -14,6 +14,6 @@ fn main() -> Result<()> {
         .call()?
         .body_mut()
         .read_to_string()?;
-    let decoded_conf = BASE64_STANDARD.decode(&encoded_conf);
+    let decoded_conf = BASE64_STANDARD.decode(&encoded_conf)?;
     Ok(())
 }
