@@ -72,8 +72,7 @@ pub struct Log {
 /// DNS 配置，详见 Manual → DNS
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Dns {
-    #[serde(flatten)]
-    pub extra: serde_json::Map<String, serde_json::Value>,
+    servers: Vec<DnsServer>,
 }
 
 /// NTP 配置，详见 Manual → NTP
@@ -151,4 +150,31 @@ pub struct Service {
 pub struct Experimental {
     #[serde(flatten)]
     pub extra: serde_json::Map<String, serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct DnsServer {
+    pub r#type: DnsServerType,
+    pub tag: String,
+}
+
+#[derive(Clone, Copy, Debug, Default, Serialize, Deserialize)]
+pub enum DnsServerType {
+    #[default]
+    Empty,
+    Local,
+    Hosts,
+    Tcp,
+    Udp,
+    Tls,
+    Quic,
+    Https,
+    H3,
+    Dhcp,
+    Mdns,
+    FakeIp,
+    Tailscale,
+    OpenConnect,
+    OpenVpn,
+    Resolved,
 }
