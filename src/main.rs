@@ -1,3 +1,5 @@
+use std::{fs::File, io::Write};
+
 use anyhow::Result;
 // use base64::prelude::*;
 use clap::Parser;
@@ -12,10 +14,13 @@ mod errors;
 mod parser;
 
 fn main() -> Result<()> {
-    let raw = cli::Args::parse().proxy;
+    let args = cli::Args::parse();
+    let raw = args.proxy;
+    let dest_dir = args.dest_dir;
     let uri: VlessUri = raw.parse()?;
     let conf = uri.to_sing_box_config("proxy", "127.0.0.1", 8080u16)?;
+    let mut dest_file = File::create(dest_dir.join("conf.json"))?;
     let conf_string = serde_json::to_string(&conf)?;
-    println!("{conf_string}");
+    dest_file.write_all(conf_string.as_bytes())?;
     Ok(())
 }
