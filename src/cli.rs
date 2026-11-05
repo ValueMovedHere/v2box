@@ -10,4 +10,6 @@ pub struct Args {
     // pub subscription_url: String,
     #[arg(short, long, required = true, value_name = "PROXY")]
     pub proxy: String,
+    #[arg(long, value_name = "PORT", default_value_t = 8080u16)]
+    pub port: u16,
 }
