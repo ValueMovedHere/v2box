@@ -1,10 +1,8 @@
 use std::{fs::File, io::Write};
 
 use anyhow::Result;
-// use base64::prelude::*;
 use clap::Parser;
 use serde_json;
-// use ureq;
 
 use crate::parser::VlessUri;
 

@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 
+use base64::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -139,4 +140,17 @@ pub struct RouteOptions {
 
 fn default_path() -> String {
     "/".to_owned()
+}
+
+pub fn fetch_conf(subscription_url: &str, b64_decode: bool) -> Vec<String> {
+    let response = ureq::get(subscription_url)
+        .call()
+        .expect("Failed to fetch configuration");
+    let mut body_string = response.into_body().read_to_string().unwrap();
+    if b64_decode {
+        body_string = BASE64_STANDARD
+            .decode(body_string)
+            .expect("Failed to decode response");
+    }
+    // let lines: Vec<String> = body_string.lines().collect();
 }
