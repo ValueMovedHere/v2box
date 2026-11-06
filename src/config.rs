@@ -1,8 +1,10 @@
-use std::collections::BTreeMap;
+use std::fs::File;
 use std::path::Path;
+use std::{collections::BTreeMap, io::Write};
 
 use base64::prelude::*;
 use serde::{Deserialize, Serialize};
+use serde_json;
 use uuid::Uuid;
 
 use crate::parser::PacketEncoding;
@@ -158,6 +160,22 @@ pub fn fetch_conf(subscription_url: &str, b64_decode: bool) -> Vec<String> {
     lines
 }
 
-pub fn write_conf_files(dest_dir: Path) {
+pub struct ListenerConf {
+    tag: String,
+    addr: String,
+    port: u16,
+}
+
+pub fn write_conf_files(dest_dir: &Path, confs: Vec<SingBoxConfig>) {
     // 向目标目录写入一系列配置文件
+    let mut filename = 0;
+    for conf in confs {
+        let conf_string = serde_json::to_string(&conf).unwrap();
+        let file_path = dest_dir.join(filename.to_string());
+        let mut dest_file = File::create(file_path).expect("Failed to create configuration file");
+        dest_file
+            .write_all(conf_string.as_bytes())
+            .expect("Failed to write to configuration file");
+        filename += 1;
+    }
 }
