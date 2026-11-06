@@ -1,4 +1,5 @@
 use std::collections::BTreeMap;
+use std::path::Path;
 
 use base64::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -148,9 +149,15 @@ pub fn fetch_conf(subscription_url: &str, b64_decode: bool) -> Vec<String> {
         .expect("Failed to fetch configuration");
     let mut body_string = response.into_body().read_to_string().unwrap();
     if b64_decode {
-        body_string = BASE64_STANDARD
+        let body_decoded = BASE64_STANDARD
             .decode(body_string)
             .expect("Failed to decode response");
+        body_string = String::from_utf8(body_decoded).unwrap();
     }
-    // let lines: Vec<String> = body_string.lines().collect();
+    let lines: Vec<String> = body_string.lines().map(String::from).collect();
+    lines
+}
+
+pub fn write_conf_files(dest_dir: Path) {
+    // 向目标目录写入一系列配置文件
 }
