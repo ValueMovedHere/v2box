@@ -2,6 +2,7 @@ use std::fs::File;
 use std::path::Path;
 use std::{collections::BTreeMap, io::Write};
 
+use anyhow::Result;
 use base64::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json;
@@ -166,7 +167,7 @@ pub struct ListenerConf {
     port: u16,
 }
 
-pub fn write_conf_files(dest_dir: &Path, confs: Vec<SingBoxConfig>) {
+pub fn write_conf_files(dest_dir: &Path, confs: Vec<SingBoxConfig>) -> Result<()> {
     // 向目标目录写入一系列配置文件
     let mut filename = 0;
     for conf in confs {
@@ -178,4 +179,5 @@ pub fn write_conf_files(dest_dir: &Path, confs: Vec<SingBoxConfig>) {
             .expect("Failed to write to configuration file");
         filename += 1;
     }
+    Ok(())
 }
