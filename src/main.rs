@@ -1,10 +1,10 @@
-use std::{fs::File, io::Write};
-
 use anyhow::Result;
 use clap::Parser;
-use serde_json;
 
-use crate::{config::fetch_conf, parser::VlessUri};
+use crate::{
+    config::{SingBoxConfig, fetch_conf, write_conf_files},
+    parser::VlessUri,
+};
 
 mod cli;
 mod config;
@@ -22,9 +22,20 @@ fn main() -> Result<()> {
     // let mut dest_file = File::create(dest_dir.join("conf.json"))?;
     // let conf_string = serde_json::to_string(&conf)?;
     // dest_file.write_all(conf_string.as_bytes())?;
+    //
+    // 如果有提供订阅链接, 使用订阅链接来获取配置
     if let Some(url) = args.subscription_url {
         subcription_url = url;
     }
     let lines = fetch_conf(&subcription_url, args.b64_decode);
+    let vless_uris: Vec<VlessUri> = lines
+        .into_iter()
+        .map(|item| item.parse().unwrap())
+        .collect();
+    let confs: Vec<SingBoxConfig> = vless_uris
+        .into_iter()
+        .map(|uri| uri.to_sing_box_config("proxy", "localhost", 8080).unwrap())
+        .collect();
+    write_conf_files(&dest_dir, confs).expect("Failed to write conf files");
     Ok(())
 }
