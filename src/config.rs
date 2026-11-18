@@ -5,7 +5,6 @@ use std::{collections::BTreeMap, io::Write};
 use anyhow::Result;
 use base64::prelude::*;
 use serde::{Deserialize, Serialize};
-use serde_json;
 use uuid::Uuid;
 
 use crate::parser::PacketEncoding;
