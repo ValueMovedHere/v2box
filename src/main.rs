@@ -27,7 +27,7 @@ fn main() -> Result<()> {
         }
         let vless_uri: VlessUri = raw.unwrap().parse().expect("Failed to parse URI");
         let conf = vless_uri
-            .to_sing_box_config("proxy", "localhost", port)
+            .to_sing_box_config("proxy", "127.0.0.1", port)
             .unwrap();
         let conf_string = serde_json::to_string(&conf).unwrap();
         let mut dest_file =
@@ -43,7 +43,7 @@ fn main() -> Result<()> {
         .collect();
     let confs: Vec<SingBoxConfig> = vless_uris
         .into_iter()
-        .map(|uri| uri.to_sing_box_config("proxy", "localhost", port).unwrap())
+        .map(|uri| uri.to_sing_box_config("proxy", "127.0.0.1", port).unwrap())
         .collect();
     write_conf_files(&dest_dir, confs).expect("Failed to write conf files");
     Ok(())
